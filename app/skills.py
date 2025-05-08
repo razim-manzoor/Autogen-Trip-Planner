@@ -1,6 +1,6 @@
 import os
 from tavily import TavilyClient
-from app.config import TAVILY_API_KEY, TAVILY_ENABLED # Import from your config
+from app.config import TAVILY_API_KEY, TAVILY_ENABLED 
 from datetime import datetime
 
 # Initialize Tavily client if enabled
@@ -24,7 +24,7 @@ def search_web(query: str, max_results: int = 3) -> str:
     """
     if not TAVILY_ENABLED or tavily_client is None:
         # Fallback if Tavily is not available or not configured
-        # This message guides the LLM to use its internal knowledge
+        # guides the LLM to use its internal knowledge
         return (
             f"Web search skill is not available. Please use your existing knowledge "
             f"to answer the query: '{query}'. If you lack specific real-time information "
@@ -95,19 +95,17 @@ def format_day_by_day_itinerary_india(itinerary_details: dict) -> str:
         return "Error: Itinerary details are missing or not in the expected format."
 
     output = []
-    # Use get with a default value to handle missing keys gracefully
     output.append(f"**{itinerary_details.get('trip_title', 'Your Indian Trip Itinerary')}**")
     output.append(f"Destination: {itinerary_details.get('destination', 'N/A')}")
     output.append(f"Duration: {itinerary_details.get('duration_days', 'N/A')} days")
-    output.append(f"Estimated Budget: {itinerary_details.get('overall_budget_estimate', 'N/A')}\n") # Currency comes from input
+    output.append(f"Estimated Budget: {itinerary_details.get('overall_budget_estimate', 'N/A')}\n")
 
     if "daily_plans" in itinerary_details and itinerary_details["daily_plans"]:
         for day_plan in itinerary_details["daily_plans"]:
-            # Using a consistent header format
+            # header format
             output.append(f"--- Day {day_plan.get('day', 'N/A')}: {day_plan.get('theme', 'Activities')} ---")
             if "activities" in day_plan and day_plan["activities"]:
                 for activity in day_plan["activities"]:
-                    # Flexibly handle time and cost being optional
                     time_str = f"[{activity.get('time', 'Time not specified')}] " if activity.get('time') else ""
                     cost_str = f" (Est: {activity.get('est_cost', 'Cost not specified')})" if activity.get('est_cost') else ""
                     output.append(f"  - {time_str}{activity.get('description', 'No description')}{cost_str}")
@@ -120,11 +118,11 @@ def format_day_by_day_itinerary_india(itinerary_details: dict) -> str:
     else:
         output.append("No daily plans provided.")
 
-    # Adjusted Disclaimer for Indian context
+    # Adjusted Disclaimer
     output.append("\n--- Important Notes ---")
     output.append("Estimated costs are indicative and can vary significantly based on travel style, time of year, and local conditions.")
-    output.append("Consider using local transport options like auto-rickshaws, cycle rickshaws, or ride-sharing apps within cities.") # Added transport suggestion
-    output.append("Prices for food, shopping, and local transport might be open to bargaining in some areas.") # Added note on bargaining
+    output.append("Consider using Uber mostly as its safer but there are alternatives like cycle rikshaws etc...") 
+    output.append("Prices for shopping, and local transport might be open to bargaining in some areas.") 
     output.append("Verify timings and book tickets/accommodations in advance, especially during peak season.")
     output.append("-----------------------")
 
