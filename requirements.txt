@@ -1,0 +1,5 @@
+pyautogen~=0.2.25    
+python-dotenv~=1.0.0
+groq~=0.7.0          
+tavily-python~=0.3.3 
+gradio~=4.20.0    
