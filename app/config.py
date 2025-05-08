@@ -30,3 +30,22 @@ LLM_CONFIG_GROQ_70B = {
     "cache_seed": 42,  # For reproducibility 
     # "temperature": 0.6, # Adjust creativity/determinism
 }
+
+LLM_CONFIG_GROQ_8B = {
+    "config_list": [config for config in OAI_CONFIG_LIST_GROQ if config["model"] == "llama3-8b-8192"],
+    "cache_seed": 42,
+    # "temperature": 0.5,
+}
+
+# Ensure at least one config is present
+if not LLM_CONFIG_GROQ_70B["config_list"]:
+    print("Warning: llama3-70b-8192 configuration not found. Falling back.")
+    LLM_CONFIG_GROQ_70B["config_list"] = OAI_CONFIG_LIST_GROQ
+if not LLM_CONFIG_GROQ_8B["config_list"]:
+    print("Warning: llama3-8b-8192 configuration not found. Falling back.")
+    LLM_CONFIG_GROQ_8B["config_list"] = OAI_CONFIG_LIST_GROQ
+
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY not found in .env file. Please add it.")
+
+TAVILY_ENABLED = bool(TAVILY_API_KEY)
