@@ -1,56 +1,49 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
+from typing import List, Dict, Any
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-if not os.path.exists(dotenv_path):
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-
-load_dotenv(dotenv_path=dotenv_path)
+# Load .env reliably
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-# Define the OAI_CONFIG_LIST for AutoGen
-OAI_CONFIG_LIST_GROQ = [
+if not GROQ_API_KEY:
+    raise EnvironmentError("GROQ_API_KEY not set in environment.")
+
+# Base config list
+OAI_CONFIG_LIST_GROQ: List[Dict[str, Any]] = [
     {
-        "model": "llama3-70b-8192", # Powerful model for planning and complex reasoning
+        "model": "llama3-70b-8192",
         "api_key": GROQ_API_KEY,
         "base_url": "https://api.groq.com/openai/v1",
         "api_type": "openai",
+        "request_timeout": 60,     # 60s timeout on every call
     },
     {
-        "model": "llama3-8b-8192", # Fast model for simpler tasks
+        "model": "llama3-8b-8192",
         "api_key": GROQ_API_KEY,
         "base_url": "https://api.groq.com/openai/v1",
         "api_type": "openai",
+        "request_timeout": 60,
     }
 ]
 
-# Configuration for the agents, specifying which LLM config to use
+def _pick_config(model_name: str):
+    cfgs = [c for c in OAI_CONFIG_LIST_GROQ if c["model"] == model_name]
+    if not cfgs:
+        raise ValueError(f"No config for model {model_name}")
+    return cfgs
+
 LLM_CONFIG_GROQ_70B = {
-    "config_list": [config for config in OAI_CONFIG_LIST_GROQ if config["model"] == "llama3-70b-8192"],
-    "cache_seed": 42,  # For reproducibility
-    # "temperature": 0.6, # Adjust creativity/determinism
+    "config_list": _pick_config("llama3-70b-8192"),
+    "cache_seed": 42,
 }
 
 LLM_CONFIG_GROQ_8B = {
-    "config_list": [config for config in OAI_CONFIG_LIST_GROQ if config["model"] == "llama3-8b-8192"],
+    "config_list": _pick_config("llama3-8b-8192"),
     "cache_seed": 42,
-    # "temperature": 0.5,
 }
 
-# Ensure at least one config is present
-if not LLM_CONFIG_GROQ_70B["config_list"]:
-    print("Warning: llama3-70b-8192 configuration not found in OAI_CONFIG_LIST_GROQ. Using all available Groq configs.")
-    LLM_CONFIG_GROQ_70B["config_list"] = OAI_CONFIG_LIST_GROQ
-if not LLM_CONFIG_GROQ_8B["config_list"]:
-    print("Warning: llama3-8b-8192 configuration not found in OAI_CONFIG_LIST_GROQ. Using all available Groq configs.")
-    LLM_CONFIG_GROQ_8B["config_list"] = OAI_CONFIG_LIST_GROQ
-
-
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found. Please ensure it's in your .env file and accessible.")
-
 TAVILY_ENABLED = bool(TAVILY_API_KEY)
-if not TAVILY_ENABLED:
-    print("Warning: TAVILY_API_KEY not found or empty. Web search skill will be disabled.")

@@ -85,7 +85,7 @@ with gr.Blocks(theme=gr.themes.Soft(), css=".gradio-container {max-width: 90% !i
     )
 
     gr.Markdown("---")
-    gr.Markdown("Project by Razim Manzoor. Base code enhanced by AI.")
+    gr.Markdown("Project by Razim Manzoor")
     gr.Markdown("Disclaimer: This is an AI-generated plan. Verify all details before making bookings.")
 
 if __name__ == "__main__":
