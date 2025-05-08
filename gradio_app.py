@@ -139,8 +139,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     )
     
     gr.Markdown("---")
-    gr.Markdown("Powered by AutoGen, Groq, and Gradio. Project by [Your Name/Student Project].")
-    gr.Markdown("Disclaimer: This is an AI-generated plan. Verify all details before making bookings. Tavily API used for web search if enabled.")
+    gr.Markdown("Powered by AutoGen, Groq, and Gradio. Project by Razim Manzoor.")
+    gr.Markdown("Disclaimer: This is an AI-generated plan. Verify all details before making bookings.")
 
 if __name__ == "__main__":
     print("Starting Gradio UI for AI Trip Planner...")
